@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.2/dist/leaflet.css" />
+    <style>#mapid { height: 600px;}</style>
+
+
+
+    <title>Gamification for Sensebox</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <link href="css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/jumbotron.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="js/ie-emulation-modes-warning.js"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+      <nav class="navbar navbar-inverse navbar-fixed-top">
+     <div class="container">
+       <div class="navbar-header">
+         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+           <span class="sr-only">Toggle navigation</span>
+           <span class="icon-bar"></span>
+           <span class="icon-bar"></span>
+           <span class="icon-bar"></span>
+         </button>
+         <a class="navbar-brand" href="#">Sensebox game</a>
+       </div>
+
+
+
+         <!-- Single button -->
+         <div id="navbar"  class="btn-group">
+           <form class="navbar-form navbar-left">
+           <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+             User <span class="caret"></span>
+           </button>
+           <ul class="dropdown-menu">
+             <li><a href="#">Meine Sensebox</a></li>
+             <li><a href="#">Mein Account</a></li>
+             <li role="separator" class="divider"></li>
+             <li><a href="#">Meine Punkte teilen</a></li>
+           </ul>
+           </form>
+         </div>
+         <form class="navbar-form navbar-right">
+            <button type="button" class="btn btn-default btn-m">
+              <a href="http://www.opensensemap.org">Zurück zur Sensemap</a>
+            </button>
+         </form>
+            <form class="navbar-form navbar-right">
+               <button type="button" class="btn btn-info btn-m">
+                   <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+               </button>
+            </form>
+
+       <!--/.navbar-collapse -->
+     </div>
+   </nav>
+
+
+    <!-- Main jumbotron for a primary marketing message or call to action -->
+
+
+    <div class="container">
+      <!-- Example row of columns -->
+      <div class="row">
+        <div class="col-md-8">
+          <h2>Finde den passenden Ort zu den Daten</h2>
+            <div id="mapid"></div>
+
+
+
+        </div>
+        <div class="container">
+          <!-- Example row of columns -->
+          <div class="row">
+            <div class="col-md-4">
+              <h2>Datensatz:</h2>
+              <div class="panel panel-default">
+                  <div class="panel-heading">Temperatur</div>
+                  <div class="panel-body">Panel content</div>
+              </div>
+              <div class="panel panel-default">
+                <div class="panel-heading">rel. Luftfeuchtigkeit</div>
+                <div class="panel-body">Panel content</div>
+              </div>
+              <div class="panel panel-default">
+                <div class="panel-heading">UV-Intensität</div>
+                <div class="panel-body">Panel content</div>
+              </div>
+              <div class="panel panel-default">
+                <div class="panel-heading">Luftdruck</div>
+                <div class="panel-body">Panel content</div>
+              </div>
+              <div class="panel panel-default">
+                <div class="panel-heading">Beleuchtungsstärke</div>
+                <div class="panel-body">Panel content</div>
+              </div>
+            </div>
+          </div>
+
+          <hr>
+        </div> <!-- /container -->
+      </div>
+
+      <hr>
+
+      <footer>
+        <p>&copy; 2016 Company, Inc.</p>
+      </footer>
+    </div> <!-- /container -->
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script js/vendor/jquery.min.js"><\/script>')</script>
+    <script src="js/bootstrap.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="js/ie10-viewport-bug-workaround.js"></script>
+    <script src="https://unpkg.com/leaflet@1.0.2/dist/leaflet.js"></script>
+    <script type = "text/javascript">
+        var mymap = L.map('mapid').setView([51.9606649, 7.6161347], 13);
+        L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+            attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+            maxZoom: 18,
+            id: 'hoelsch.e2b0812b',
+            accessToken: 'pk.eyJ1IjoiaG9lbHNjaCIsImEiOiJxblpwakZrIn0.JTTnLszkIJB11k8YEe7raQ'}).addTo(mymap);
+      </script>
+
+  </body>
+</html>

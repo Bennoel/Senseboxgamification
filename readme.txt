@@ -1,0 +1,1 @@
+Datensätzeauslesen über "last measurements as csv" - > CSV parsen ";WERT;"

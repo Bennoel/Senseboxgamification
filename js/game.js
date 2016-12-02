@@ -10,7 +10,7 @@ var popup = L.popup();
 function onMapClick(e) {
 popup
 .setLatLng(e.latlng)
-.setContent("You clicked the map at " + e.latlng.toString() + L.latLng([48.201332, 16.367305]).distanceTo([49.201332, 10.367305]) )
+.setContent("Die Entfernung zur Sensebox beträgt: " + ((L.latLng(e.latlng).distanceTo([49.201332, 10.367305]) / 1000).toFixed(3)) + " Km" )
 .openOn(mymap);
 L.latLng([48.201332, 16.367305]).distanceTo([49.201332, 10.367305]);
 }

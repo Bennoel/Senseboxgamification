@@ -15,3 +15,16 @@ popup
 L.latLng([48.201332, 16.367305]).distanceTo([49.201332, 10.367305]);
 }
 mymap.on('click', onMapClick);
+
+
+var app = angular.module('myApp', []);
+app.controller('myCtrl', function($scope, $http) {
+  $http({
+    method : "GET",
+    url : "https://api.opensensemap.org/boxes?"
+  }).then(function mySucces(response) {
+      $scope.myData = response.data;
+    }, function myError(response) {
+      $scope.myData = response.statusText;
+  });
+});

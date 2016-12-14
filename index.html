@@ -10,29 +10,20 @@
     <link rel="icon" href="../../favicon.ico">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.2/dist/leaflet.css" />
     <style>#mapid { height: 600px;}</style>
-
-
-
     <title>Gamification for Sensebox</title>
-
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
-
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-
     <!-- Custom styles for this template -->
     <link href="css/jumbotron.css" rel="stylesheet">
-
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
-
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
   </head>
-
   <body>
       <nav class="navbar navbar-inverse navbar-fixed-top">
      <div class="container">
@@ -45,9 +36,6 @@
          </button>
          <a class="navbar-brand" href="#">Sensebox game</a>
        </div>
-
-
-
          <!-- Single button -->
          <div id="navbar"  class="btn-group">
            <form class="navbar-form navbar-left">
@@ -72,24 +60,16 @@
                    <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
                </button>
             </form>
-
        <!--/.navbar-collapse -->
      </div>
    </nav>
-
-
     <!-- Main jumbotron for a primary marketing message or call to action -->
-
-
     <div class="container">
       <!-- Example row of columns -->
       <div class="row">
         <div class="col-md-8">
           <h2>Finde den passenden Ort zu den Daten</h2>
             <div id="mapid"></div>
-
-
-
         </div>
         <div class="container">
           <!-- Example row of columns -->
@@ -119,31 +99,17 @@
             </div>
           </div>
 
-          <hr>
         </div> <!-- /container -->
       </div>
-
       <hr>
-
       <footer>
         <p>&copy; 2016 Company, Inc.</p>
       </footer>
     </div>
     <div ng-app="myApp" ng-controller="myCtrl">
 
-<p>Today's welcome message is:</p>
-  <li ng-repeat="x in myData">
-    {{ x._id }}
-  </li>
-
-<p>{{myWelcome}}</p>
-
 </div>
-
-<p>The $http service requests a page on the server, and the response is set as the value of the "myWelcome" variable.</p>
-
  <!-- /container -->
-
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
@@ -154,6 +120,5 @@
     <script src="js/bootstrap.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.0.2/dist/leaflet.js"></script>
     <script src="js/game.js"></script>
-
   </body>
 </html>

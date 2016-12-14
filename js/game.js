@@ -1,6 +1,7 @@
 "use strict";
-
-var mymap = L.map('mapid').setView([51.9606649, 7.6161347], 13);
+var latbox;
+var longbox;
+var mymap = L.map('mapid').setView([51.4, 9], 6);
 L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
     maxZoom: 18,
@@ -10,63 +11,86 @@ var popup = L.popup();
 function onMapClick(e) {
 popup
 .setLatLng(e.latlng)
-.setContent("Die Entfernung zur Sensebox beträgt: " + ((L.latLng(e.latlng).distanceTo([49.201332, 10.367305]) / 1000).toFixed(3)) + " Km" )
+.setContent("Die Entfernung zur Sensebox beträgt: " + ((L.latLng(e.latlng).distanceTo([latbox, longbox]) / 1000).toFixed(2)) + " Km" )
 .openOn(mymap);
-L.latLng([48.201332, 16.367305]).distanceTo([49.201332, 10.367305]);
+// punkte einteilung
+
+if (((L.latLng(e.latlng).distanceTo([latbox, longbox]) / 1000).toFixed(2))< 50)
+    {
+        console.log("100 punkte");
+    }
+if (((L.latLng(e.latlng).distanceTo([latbox, longbox]) / 1000).toFixed(2))<100 &&
+   ((L.latLng(e.latlng).distanceTo([latbox, longbox]) / 1000).toFixed(2))>50)
+    {
+        console.log("50 punkte");
+    }
+if (((L.latLng(e.latlng).distanceTo([latbox, longbox]) / 1000).toFixed(2))<150 && ((L.latLng(e.latlng).distanceTo([latbox, longbox]) / 1000).toFixed(2)) >100  )
+    {
+        console.log("10 Punkte");
+    }
+if (((L.latLng(e.latlng).distanceTo([latbox, longbox]) / 1000).toFixed(2))>150 ){
+    console.log("keine punkte für dich");
+}
+
 }mymap.on('click', onMapClick);
-
-
+//gibt uns alle Boxen aus, ruft die randomize funktion auf um eine Random Box rauszugeben
 var app = angular.module('myApp', []);
 app.controller('myCtrl', function($scope, $http) {
-
   $scope.boxes = {};
   var boxId = [];
   var gameBoxId = [];
-
   $http({
     method : "GET",
     url : "https://api.opensensemap.org/boxes?"
   }).then(function mySucces(response) {
       $scope.myData = response.data;
-
       for(var i in response.data){
         boxId.push(response.data[i]._id);
-
       }
-      randomize(boxId);
-      gameBox(gameBoxId);
-      console.log('boxes %o', boxId);
-
-
+      randomize(boxId, $http);
     }, function myError(response) {
       $scope.myData = response.statusText;
   });
 });
-
-function randomize(boxId){
+//sucht eine Randombox aus und übergibt das dann der funktion gameBox
+//übergebene boxId
+function randomize(boxId, http){
    var gameBoxId = boxId[Math.floor(Math.random()*boxId.length)];
     console.log('RandomBoxId: ' + gameBoxId);
-    return null;
-};
-/*
-function gameBox(gameBoxId){
-
-  var app = angular.module('myApp', []);
-  app.controller('myCtrl', function($scope, $http) {
-
-  $scope.gameObject = {};
-
+    gameBox(gameBoxId, http);
+    };
+function gameBox(gameBoxId, $http){
   $http({
     method : "GET",
-    url : "https://api.opensensemap.org/boxes/"+gameBoxId+"/sensors"
+    url : "https://api.opensensemap.org/boxes/"+gameBoxId
   }).then(function mySucces(response){
 
-    $scope.gameObject = response.data;
-    console.log('Gameobject: ' + gameObject)
+      console.log(response.data.loc[0].geometry.coordinates[0]);
+      console.log(response.data.loc[0].geometry.coordinates[1]);
+
+      //datum von der letzten messung
+      console.log(response.data.sensors[1].lastMeasurement.createdAt);
+      /*if abfrage wenn das datum "kleiner" als 11.11.16 ist dann soll er nochmal eine box
+      suchen, oder beim fall eines undefined, problem ist, der findet manchmal immer noch
+      boxen mit nem kleinerem datum
+      */
+
+    /*  if(response.data.sensors[1].lastMeasurement.createdAt < 2016-11-11 ||
+         response.data.sensors[1].lastMeasurement.createdAt == undefined)
+          {
+              randomize(gameBoxId, $http);
+          }
+      */
+
+      //übergebene Koordinaten für clickevent zur Berechnung
+      latbox = response.data.loc[0].geometry.coordinates[1];
+      longbox = response.data.loc[0].geometry.coordinates[0];
+      function onMapClick(e, latbox, longbox){
+
+      }
 
   }, function myError(response) {
-    $scope.gameObject = response.statusText;
-  });
+      console.log(response);
 
-})};
-*/
+  });
+}

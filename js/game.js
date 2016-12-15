@@ -11,6 +11,7 @@ var boxId = [];
 var app = angular.module('myApp', []);
 app.controller('myCtrl', function($scope, $http) {
   $scope.box = [];
+  $scope.distance = [];
   var gameBoxId = [];
 
   $http({
@@ -35,15 +36,6 @@ app.controller('myCtrl', function($scope, $http) {
       accessToken: 'pk.eyJ1IjoiaG9lbHNjaCIsImEiOiJxblpwakZrIn0.JTTnLszkIJB11k8YEe7raQ'}).addTo(mymap);
   var popup = L.popup();
 
-  //boxDistance ist undefined
-  var helloPopup = L.popup().setContent(("Die Entfernung zur Sensebox beträgt: " + boxDistance + " Km" ));
-  //TO-DO
-  L.easyButton('glyphicon-ok', function(){
-      helloPopup.setLatLng(mymap.getCenter()).openOn(mymap);
-  }).addTo(mymap);
-
-  //TO-DO neue Daten geladen Nachricht  + addieren der Punkte + speichern der Punkte
-  L.easyButton('fa-repeat', function(){randomize(boxId, $http)}).addTo(mymap);
 
   function onMapClick(e) {
 
@@ -51,8 +43,8 @@ app.controller('myCtrl', function($scope, $http) {
   .setLatLng(e.latlng)
   .setContent("Die Entfernung zur Sensebox beträgt: " + ((L.latLng(e.latlng).distanceTo([latbox, longbox]) / 1000).toFixed(2)) + " Km" )
   .openOn(mymap);
-  boxDistance = (L.latLng(e.latlng).distanceTo([latbox, longbox]) / 1000).toFixed(2)
-  console.log(boxDistance);
+  $scope.distance = (L.latLng(e.latlng).distanceTo([latbox, longbox]) / 1000).toFixed(2)
+  console.log("l33337 Test  "+$scope.distance);
   // punkte einteilung
 
       if (((L.latLng(e.latlng).distanceTo([latbox, longbox]) / 1000).toFixed(2))< 50)
@@ -72,7 +64,17 @@ app.controller('myCtrl', function($scope, $http) {
   }
       //reload();
   }
+$scope.distance = boxDistance;
+console.log("heiiiide " + boxDistance)
+    //boxDistance ist undefined
+    var helloPopup = L.popup().setContent(("Die Entfernung zur Sensebox beträgt: " + $scope.distance + " Km" ));
+    //TO-DO
+    L.easyButton('glyphicon-ok', function(){
+        helloPopup.setLatLng(mymap.getCenter()).openOn(mymap);
+    }).addTo(mymap);
 
+    //TO-DO neue Daten geladen Nachricht  + addieren der Punkte + speichern der Punkte
+    L.easyButton('fa-repeat', function(){randomize(boxId, $http)}).addTo(mymap);
   mymap.on('click', onMapClick);
 
 

@@ -73,28 +73,12 @@
         </div>
         <div class="container">
           <!-- Example row of columns -->
-          <div class="row">
+          <div class="row" ng-app="myApp" ng-controller="myCtrl">
             <div class="col-md-4">
               <h2>Datensatz:</h2>
-              <div class="panel panel-default">
-                  <div class="panel-heading">Temperatur</div>
-                  <div class="panel-body">Panel content</div>
-              </div>
-              <div class="panel panel-default">
-                <div class="panel-heading">rel. Luftfeuchtigkeit</div>
-                <div class="panel-body">Panel content</div>
-              </div>
-              <div class="panel panel-default">
-                <div class="panel-heading">UV-Intensität</div>
-                <div class="panel-body">Panel content</div>
-              </div>
-              <div class="panel panel-default">
-                <div class="panel-heading">Luftdruck</div>
-                <div class="panel-body">Panel content</div>
-              </div>
-              <div class="panel panel-default">
-                <div class="panel-heading">Beleuchtungsstärke</div>
-                <div class="panel-body">Panel content</div>
+              <div class="panel panel-default" ng-repeat="b in box">
+                  <div class="panel-heading">{{b.title}}</div>
+                  <div class="panel-body">{{b.value}} {{b.unit}}</div>
               </div>
             </div>
           </div>

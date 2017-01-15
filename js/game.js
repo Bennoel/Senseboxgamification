@@ -1,149 +1,208 @@
 "use strict";
 
+var firstpolyline;
 var latbox;
 var longbox;
-var oneWeekAgo = new Date();
-  oneWeekAgo.setDate(oneWeekAgo.getDate()-7);
-var isoOneWeekAgo = oneWeekAgo.toISOString();
+var marker = null;
+var ergebnis;
+var popup = L.popup();
+var boxDistance;
+var oneHourAgo = new Date();
+oneHourAgo.setHours(oneHourAgo.getHours() - 1);
+var isoOneHourAgo = oneHourAgo.toISOString();
 var boxId = [];
+var position;
+var pointB = [];
+
+var greenIcon = new L.Icon({
+    iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+
+//aufrufen der karte
+var mymap = L.map('mapid').setView([51.4, 9], 2);
+L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+    maxZoom: 18,
+    id: 'hoelsch.e2b0812b',
+    accessToken: 'pk.eyJ1IjoiaG9lbHNjaCIsImEiOiJxblpwakZrIn0.JTTnLszkIJB11k8YEe7raQ'
+}).addTo(mymap);
 
 //gibt uns alle Boxen aus, ruft die randomize funktion auf um eine Random Box rauszugeben
 var app = angular.module('myApp', []);
 app.controller('myCtrl', function($scope, $http) {
-  $scope.box = [];
-  $scope.distance = [];
-  var gameBoxId = [];
+    $scope.box = [];
+    $scope.distance = [];
+    var gameBoxId = [];
 
-  $http({
-    method : "GET",
-    url : "https://api.opensensemap.org/boxes?"
-
-  }).then(function mySucces(response) {
-      $scope.myData = response.data;
-      for(var i in response.data){
-        boxId.push(response.data[i]._id);
-      }
-      randomize(boxId, $http);
-    }, function myError(response) {
-      $scope.myData = response.statusText;
-  });
-  var boxDistance;
-  /*
-      Map-function
-  */
-  var mymap = L.map('mapid').setView([51.4, 9], 2);
-  L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
-      attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
-      maxZoom: 18,
-      id: 'hoelsch.e2b0812b',
-      accessToken: 'pk.eyJ1IjoiaG9lbHNjaCIsImEiOiJxblpwakZrIn0.JTTnLszkIJB11k8YEe7raQ'}).addTo(mymap);
-  var popup = L.popup();
-
-  function addMarker(e){
-// Add marker to map at click location; add popup window
-var newMarker = new L.marker(e.latlng).addTo(mymap);
-}
-  /*
-    OnMapClick function defines what happnes when the user clicks on the map.
-  */
-
-  function onMapClick(e) {
-
-  popup
-  .setLatLng(e.latlng)
-  .setContent("Die Entfernung zur Sensebox beträgt: " + ((L.latLng(e.latlng).distanceTo([latbox, longbox]) / 1000).toFixed(2)) + " Km" )
-  .openOn(mymap);
-  $scope.distance = (L.latLng(e.latlng).distanceTo([latbox, longbox]) / 1000).toFixed(2)
-  console.log("l33337 Test  "+$scope.distance);
-  // punkte einteilung
-
-      if (((L.latLng(e.latlng).distanceTo([latbox, longbox]) / 1000).toFixed(2))< 50)
-        {
-          console.log("100 punkte");
-        }
-      if (((L.latLng(e.latlng).distanceTo([latbox, longbox]) / 1000).toFixed(2))<100 && ((L.latLng(e.latlng).distanceTo([latbox, longbox]) / 1000).toFixed(2))>50)
-        {
-          console.log("50 punkte");
-        }
-      if (((L.latLng(e.latlng).distanceTo([latbox, longbox]) / 1000).toFixed(2))<150 && ((L.latLng(e.latlng).distanceTo([latbox, longbox]) / 1000).toFixed(2)) >100  )
-        {
-          console.log("10 Punkte");
-        }
-      if (((L.latLng(e.latlng).distanceTo([latbox, longbox]) / 1000).toFixed(2))>150 ){
-          console.log("keine punkte für dich");
-  }
-      //reload();
-  }
-$scope.distance = boxDistance;
-console.log("heiiiide " + boxDistance)
-
-    // Marker Button to draw players guess. TO-DO Set Game-Marker
-L.easyButton('glyphicon-map-marker', function(){}).addTo(mymap);
-    //Show MSG with distance to sensebox and reached points.
-    var helloPopup = L.popup().setContent(("Die Entfernung zur Sensebox beträgt: " + $scope.distance + " Km" ));
-    //Button to enter the guess. TO-DO Draw Line between Sensebox-Marker and Game-Marker. Show reached points. Add points to account
-L.easyButton('glyphicon-ok', function(){
-    helloPopup.setLatLng(mymap.getCenter()).openOn(mymap);
-}).addTo(mymap);
-
-    //Button to set a new game. TO-DO 1. MSG:"New Game loaded" 2. Delete last Game-Marker
-L.easyButton('fa-repeat', function(){randomize(boxId, $http)}).addTo(mymap);
-
-mymap.on('click', onMapClick);
-  /**
-      Searches a new random box and starts the function GameBox
-  */
-
-  function randomize(boxId, http){
-     var gameBoxId = boxId[Math.floor(Math.random()*boxId.length)];  //find a random index in the Array boxId which consists of every box-id
-      gameBox(gameBoxId, http); //Starts the function gameBox
-      };
-  /**
-      Gets the data as a JSON of a certain box
-  */
-    function gameBox(gameBoxId, $http){
     $http({
-      method : "GET",
-      url : "https://api.opensensemap.org/boxes/"+gameBoxId
-    }).then(function mySucces(response){
+        method: "GET",
+        url: "https://api.opensensemap.org/boxes?"
 
-         /*
-          If the boxe are not working or too old, find a new box and try it again.
-        */
-
-        if(response.data.sensors === undefined ||
-           response.data.sensors[0].hasOwnProperty("lastMeasurement") == false ||
-           response.data.sensors[0].lastMeasurement == null ||
-           response.data.sensors[0].lastMeasurement.createdAt<=isoOneWeekAgo
-           ){
-                randomize(boxId, $http); // finding a new box
-            }
-
-        else{
-              console.log("sucess"); //the found box is okay.
-              latbox = response.data.loc[0].geometry.coordinates[1];   //getting the latitude
-              longbox = response.data.loc[0].geometry.coordinates[0];  //getting the longitude
-        /*
-            Getting the box's latest measurements
-        */
-        var sensors = [];
-
-        for(var i=0; i < response.data.sensors.length; i++){
-            var sensor = {};
-            sensor.title = response.data.sensors[i].title;
-            sensor.value = response.data.sensors[i].lastMeasurement.value;
-            sensor.unit = response.data.sensors[i].unit;
-            sensors.push(sensor);
+    }).then(function mySucces(response) {
+        $scope.myData = response.data;
+        for (var i in response.data) {
+            boxId.push(response.data[i]._id);
         }
-        $scope.box = sensors;
+        randomize(boxId, $http);
+    }, function myError(response) {
+        $scope.myData = response.statusText;
+    });
+
+
+
+
+    function score() {
+    console.log("Die Entfernung zur Sensebox beträgt: " +
+                 (position.distanceTo([latbox, longbox]) / 1000).toFixed(2) + "Km");
+     $scope.distance = (position.distanceTo([latbox, longbox]) / 1000).toFixed(2)
+     console.log("l33337 Test  "+$scope.distance);
+     // punkte einteilung
+         if (((position.distanceTo([latbox, longbox]) / 1000).toFixed(2))< 50)
+           {
+             console.log("100 punkte");
+           }
+         if (((position.distanceTo([latbox, longbox]) / 1000).toFixed(2))<100 && ((position.distanceTo([latbox, longbox]) / 1000).toFixed(2))>50)
+           {
+             console.log("50 punkte");
+           }
+         if (((position.distanceTo([latbox, longbox]) / 1000).toFixed(2))<150 && ((position.distanceTo([latbox, longbox]) / 1000).toFixed(2)) >100  )
+           {
+             console.log("10 Punkte");
+           }
+         if (((position.distanceTo([latbox, longbox]) / 1000).toFixed(2))>150 ){
+             console.log("keine punkte für dich");
+     }
+   };
+
+
+
+
+    function onMapClick(e) {
+        if (marker == null) {
+            marker = new L.marker(e.latlng, {
+                draggable: 'false'
+            });
+
+            marker.on('dragend', function(event) {
+                marker = event.target;
+                marker.setLatLng(new L.LatLng(position.lat, position.lng), {
+                    draggable: 'false'
+                });
+                mymap.panTo(new L.LatLng(position.lat, position.lng));
+            });
+            mymap.addLayer(marker);
+            position = marker.getLatLng();
+            pointB = [position.lat, position.lng];
+        } else {
+
+            mymap.removeLayer(marker);
+            marker = null;
+            marker = new L.marker(e.latlng, {
+                draggable: 'false'
+            });
+            position = marker.getLatLng();
+            pointB = [position.lat, position.lng];
+            mymap.addLayer(marker);
+        }
+    };
+    mymap.on('click', onMapClick);
+
+    $scope.distance = boxDistance;
+    console.log("heiiiide " + boxDistance);
+    //boxDistance ist undefined
+
+
+    //TO-DO
+    L.easyButton('glyphicon-ok', function() {
+        ergebnis = L.marker([latbox, longbox], {
+            icon: greenIcon
+        }).addTo(mymap);
+        mymap.setView([latbox, longbox], 10);
+        var pointA = [latbox, longbox];
+        var pointList = [pointA, pointB];
+        console.log(pointA, pointB);
+
+        firstpolyline = new L.Polyline(pointList, {
+            color: 'red',
+            weight: 3,
+            opacity: 0.5,
+            smoothFactor: 1
+        });
+        firstpolyline.addTo(mymap);
+        score();
+    }).addTo(mymap);
+
+
+    //TO-DO neue Daten geladen Nachricht  + addieren der Punkte + speichern der Punkte
+    L.easyButton('fa-repeat', function() {
+        randomize(boxId, $http)
+        mymap.removeLayer(marker);
+        mymap.removeLayer(ergebnis);
+    }).addTo(mymap);
+    mymap.on('click', onMapClick);
+    //sucht eine Randombox aus und übergibt das dann der funktion gameBox
+    //übergebene boxId
+    function randomize(boxId, http) {
+        var gameBoxId = boxId[Math.floor(Math.random() * boxId.length)];
+        console.log('RandomBoxId: ' + gameBoxId);
+        gameBox(gameBoxId, http);
+        mymap.removeLayer(marker);
+        mymap.removeLayer(ergebnis);
+        mymap.removeLayer(firstpolyline);
+    };
+
+    function gameBox(gameBoxId, $http) {
+        $http({
+            method: "GET",
+            url: "https://api.opensensemap.org/boxes/" + gameBoxId
+        }).then(function mySucces(response) {
+
+            /*if abfrage wenn das datum "kleiner" als 11.11.16 ist dann soll er nochmal eine box
+        suchen, oder beim fall eines undefined, problem ist, der findet manchmal immer noch
+        boxen mit nem kleinerem datum
+        TO-DO indoor boxen auschließen
+        */
+
+            if (response.data.sensors === undefined ||
+                response.data.sensors[0].hasOwnProperty("lastMeasurement") == false ||
+                response.data.sensors[0].lastMeasurement == null ||
+                response.data.sensors[0].lastMeasurement.createdAt <= isoOneHourAgo
+            ) {
+                randomize(boxId, $http);
+            } else {
+                console.log("sucess");
+
+                //übergebene Koordinaten für clickevent zur Berechnung
+                latbox = response.data.loc[0].geometry.coordinates[1];
+                longbox = response.data.loc[0].geometry.coordinates[0];
+                var sensors = [];
+
+                for (var i = 0; i < response.data.sensors.length; i++) {
+                    var sensor = {};
+                    sensor.title = response.data.sensors[i].title;
+                    sensor.value = response.data.sensors[i].lastMeasurement.value;
+                    sensor.unit = response.data.sensors[i].unit;
+                    sensor.lastMeasurement = response.data.sensors[i].lastMeasurement.createdAt;
+                    sensors.push(sensor);
+                }
+                $scope.box = sensors;
 
             }
 
-    }, function myError(response) {
-        console.log(response);
+            function onMapClick(e, latbox, longbox) {
 
-    });
-  }
+            }
+
+        }, function myError(response) {
+            console.log(response);
+
+        });
+    }
 
 
 });

@@ -2,9 +2,11 @@
 
 var firstpolyline;
 var latbox;
+var punkte = 0;
+var punkteGesamt = 0;
 var longbox;
 var marker = null;
-var ergebnis;
+var ergebnis = null;
 var popup = L.popup();
 var boxDistance;
 var oneHourAgo = new Date();
@@ -57,27 +59,28 @@ app.controller('myCtrl', function($scope, $http) {
 
 
     function score() {
-    console.log("Die Entfernung zur Sensebox beträgt: " +
-                 (position.distanceTo([latbox, longbox]) / 1000).toFixed(2) + "Km");
-     $scope.distance = (position.distanceTo([latbox, longbox]) / 1000).toFixed(2)
-     console.log("l33337 Test  "+$scope.distance);
-     // punkte einteilung
-         if (((position.distanceTo([latbox, longbox]) / 1000).toFixed(2))< 50)
-           {
-             console.log("100 punkte");
-           }
-         if (((position.distanceTo([latbox, longbox]) / 1000).toFixed(2))<100 && ((position.distanceTo([latbox, longbox]) / 1000).toFixed(2))>50)
-           {
-             console.log("50 punkte");
-           }
-         if (((position.distanceTo([latbox, longbox]) / 1000).toFixed(2))<150 && ((position.distanceTo([latbox, longbox]) / 1000).toFixed(2)) >100  )
-           {
-             console.log("10 Punkte");
-           }
-         if (((position.distanceTo([latbox, longbox]) / 1000).toFixed(2))>150 ){
-             console.log("keine punkte für dich");
-     }
-   };
+        console.log("Die Entfernung zur Sensebox beträgt: " +
+            (position.distanceTo([latbox, longbox]) / 1000).toFixed(2) + "Km");
+        $scope.distance = (position.distanceTo([latbox, longbox]) / 1000).toFixed(2)
+        console.log("l33337 Test  " + $scope.distance);
+        // punkte einteilung
+        if (((position.distanceTo([latbox, longbox]) / 1000).toFixed(2)) < 50) {
+            punkte = punkte + +100;
+            punkteGesamt = punkteGesamt + +100;
+        }
+        if (((position.distanceTo([latbox, longbox]) / 1000).toFixed(2)) < 100 && ((position.distanceTo([latbox, longbox]) / 1000).toFixed(2)) > 50) {
+            punkte += Number(50);
+            punkteGesamt += Number(50);
+        }
+        if (((position.distanceTo([latbox, longbox]) / 1000).toFixed(2)) < 150 && ((position.distanceTo([latbox, longbox]) / 1000).toFixed(2)) > 100) {
+            punkte += Number(10);
+            punkteGesamt += Number(10);
+        }
+        if (((position.distanceTo([latbox, longbox]) / 1000).toFixed(2)) > 150) {
+            punkte = +1;
+            punkteGesamt = punkteGesamt + +1;
+        }
+    };
 
 
 
@@ -85,15 +88,7 @@ app.controller('myCtrl', function($scope, $http) {
     function onMapClick(e) {
         if (marker == null) {
             marker = new L.marker(e.latlng, {
-                draggable: 'false'
-            });
-
-            marker.on('dragend', function(event) {
-                marker = event.target;
-                marker.setLatLng(new L.LatLng(position.lat, position.lng), {
-                    draggable: 'false'
-                });
-                mymap.panTo(new L.LatLng(position.lat, position.lng));
+                draggable: false
             });
             mymap.addLayer(marker);
             position = marker.getLatLng();
@@ -103,7 +98,7 @@ app.controller('myCtrl', function($scope, $http) {
             mymap.removeLayer(marker);
             marker = null;
             marker = new L.marker(e.latlng, {
-                draggable: 'false'
+                draggable: false
             });
             position = marker.getLatLng();
             pointB = [position.lat, position.lng];
@@ -119,30 +114,59 @@ app.controller('myCtrl', function($scope, $http) {
 
     //TO-DO
     L.easyButton('glyphicon-ok', function() {
-        ergebnis = L.marker([latbox, longbox], {
-            icon: greenIcon
-        }).addTo(mymap);
-        mymap.setView([latbox, longbox], 10);
-        var pointA = [latbox, longbox];
-        var pointList = [pointA, pointB];
-        console.log(pointA, pointB);
+        if (ergebnis == null) {
+            ergebnis = L.marker([latbox, longbox], {
+                icon: greenIcon
+            }).addTo(mymap);
 
-        firstpolyline = new L.Polyline(pointList, {
-            color: 'red',
-            weight: 3,
-            opacity: 0.5,
-            smoothFactor: 1
-        });
-        firstpolyline.addTo(mymap);
-        score();
+            score();
+            ergebnis.bindPopup("du hast " + punkte + " Punkt(e) in dieser Runde erzielt, deine Gesamtpunktzahl ist " + punkteGesamt).openPopup();
+            var pointA = [latbox, longbox];
+            var pointList = [pointA, pointB];
+            console.log(pointA, pointB);
+
+
+            firstpolyline = new L.Polyline(pointList, {
+                color: 'red',
+                weight: 3,
+                opacity: 0.5,
+                smoothFactor: 1
+            });
+            firstpolyline.addTo(mymap);
+            mymap.fitBounds(firstpolyline.getBounds());
+        } else {
+            mymap.removeLayer(ergebnis);
+            mymap.removeLayer(firstpolyline);
+            ergebnis = L.marker([latbox, longbox], {
+                icon: greenIcon
+            }).addTo(mymap);
+            ergebnis.bindPopup("du hast " + punkte + " Punkt(e) in dieser Runde erzielt, deine Gesamtpunktzahl ist " + punkteGesamt).openPopup();
+            var pointA = [latbox, longbox];
+            var pointList = [pointA, pointB];
+            console.log(pointA, pointB);
+
+
+            firstpolyline = new L.Polyline(pointList, {
+                color: 'red',
+                weight: 3,
+                opacity: 0.5,
+                smoothFactor: 1
+            });
+            firstpolyline.addTo(mymap);
+            mymap.fitBounds(firstpolyline.getBounds());
+        }
+
     }).addTo(mymap);
-
 
     //TO-DO neue Daten geladen Nachricht  + addieren der Punkte + speichern der Punkte
     L.easyButton('fa-repeat', function() {
-        randomize(boxId, $http)
+
+
         mymap.removeLayer(marker);
         mymap.removeLayer(ergebnis);
+        randomize(boxId, $http)
+        mymap.setView([51.4, 9], 2);
+
     }).addTo(mymap);
     mymap.on('click', onMapClick);
     //sucht eine Randombox aus und übergibt das dann der funktion gameBox

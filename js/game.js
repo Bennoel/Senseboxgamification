@@ -66,19 +66,19 @@ app.controller('myCtrl', function($scope, $http) {
         // punkte einteilung
         if (((position.distanceTo([latbox, longbox]) / 1000).toFixed(2)) < 50) {
             punkte = punkte + +100;
-            punkteGesamt = punkteGesamt + +100;
+            punkteGesamt = + punkteGesamt + +100;
         }
         if (((position.distanceTo([latbox, longbox]) / 1000).toFixed(2)) < 100 && ((position.distanceTo([latbox, longbox]) / 1000).toFixed(2)) > 50) {
             punkte += Number(50);
-            punkteGesamt += Number(50);
+            punkteGesamt = + punkteGesamt + +50;
         }
         if (((position.distanceTo([latbox, longbox]) / 1000).toFixed(2)) < 150 && ((position.distanceTo([latbox, longbox]) / 1000).toFixed(2)) > 100) {
             punkte += Number(10);
-            punkteGesamt += Number(10);
+            punkteGesamt = + punkteGesamt + +10;
         }
         if (((position.distanceTo([latbox, longbox]) / 1000).toFixed(2)) > 150) {
             punkte = +1;
-            punkteGesamt = punkteGesamt + +1;
+            punkteGesamt = +punkteGesamt + +1;
         }
     };
 
@@ -161,12 +161,13 @@ app.controller('myCtrl', function($scope, $http) {
     //TO-DO neue Daten geladen Nachricht  + addieren der Punkte + speichern der Punkte
     L.easyButton('fa-repeat', function() {
 
-
+        mymap.setView([51.4, 9], 2);
         mymap.removeLayer(marker);
         mymap.removeLayer(ergebnis);
+        mymap.removeLayer(firstpolyline);
+        ergebnis= null;
         randomize(boxId, $http)
-        mymap.setView([51.4, 9], 2);
-
+        
     }).addTo(mymap);
     mymap.on('click', onMapClick);
     //sucht eine Randombox aus und übergibt das dann der funktion gameBox
@@ -187,15 +188,16 @@ app.controller('myCtrl', function($scope, $http) {
         }).then(function mySucces(response) {
 
             /*if abfrage wenn das datum "kleiner" als 11.11.16 ist dann soll er nochmal eine box
-        suchen, oder beim fall eines undefined, problem ist, der findet manchmal immer noch
-        boxen mit nem kleinerem datum
+        suchen, oder beim fall eines undefined,
         TO-DO indoor boxen auschließen
         */
 
             if (response.data.sensors === undefined ||
                 response.data.sensors[0].hasOwnProperty("lastMeasurement") == false ||
                 response.data.sensors[0].lastMeasurement == null ||
-                response.data.sensors[0].lastMeasurement.createdAt <= isoOneHourAgo
+                response.data.sensors[0].lastMeasurement.createdAt <= isoOneHourAgo||
+                response.data.sensors[0].lastMeasurement.length <= 3 ||
+                response.data.exposure =="indoor"
             ) {
                 randomize(boxId, $http);
             } else {

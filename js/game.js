@@ -220,6 +220,24 @@ app.controller('myCtrl', function($scope, $http) {
 
         });
     }    
+    
+    $(document).ready(function(){
+        $('[data-toggle="popover"]').popover();   
+    });
+    
+    $('[data-toggle="popover"]').popover(function () {
+        alert=Hallo
+    });
+
+    $("#Ergebnis").click(function () {
+           
+         
+    })
+
+    L.easyButton('fa-comment', 
+              function (){alert('hello!')},
+             ''
+            )
 
     //TO-DO
     L.easyButton('glyphicon-ok', function() {

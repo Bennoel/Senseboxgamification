@@ -15,6 +15,8 @@ var isoOneHourAgo = oneHourAgo.toISOString();
 var boxId = [];
 var position;
 var pointB = [];
+var Runde = 0;
+
 
 var greenIcon = new L.Icon({
     iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
@@ -82,9 +84,14 @@ app.controller('myCtrl', function($scope, $http) {
         }
     };
 
+    
+    function ZähleRunde() {
 
-
-
+     Runde= Runde +1 
+     
+     $("#RundenNummer").text(Runde)
+    }
+      
     function onMapClick(e) {
         if (marker == null) {
             marker = new L.marker(e.latlng, {
@@ -110,56 +117,11 @@ app.controller('myCtrl', function($scope, $http) {
     $scope.distance = boxDistance;
     console.log("heiiiide " + boxDistance);
     //boxDistance ist undefined
-
-    $("#Antwortbtn").click(function() {
-        if (ergebnis == null) {
-            ergebnis = L.marker([latbox, longbox], {
-                icon: greenIcon
-            }).addTo(mymap)
-        
-
-            score();
-            ergebnis.bindPopup("Die Entfernung zur Sensebox beträgt: " +
-            (position.distanceTo([latbox, longbox]) / 1000).toFixed(2) + "Km .Du hast " + punkte + " Punkt(e) in dieser Runde erzielt, deine Gesamtpunktzahl ist " + punkteGesamt).openPopup();
-            var pointA = [latbox, longbox];
-            var pointList = [pointA, pointB];
-            console.log(pointA, pointB);
+     
+    $("#DrückezumSpielendernächstenRundebtn").click( function () {
 
 
-            firstpolyline = new L.Polyline(pointList, {
-                color: 'red',
-                weight: 5,
-                opacity: 0.6,
-                smoothFactor: 1
-            });
-            firstpolyline.addTo(mymap);
-            mymap.fitBounds(firstpolyline.getBounds());
-        } else {
-            mymap.removeLayer(ergebnis);
-            mymap.removeLayer(firstpolyline);
-            ergebnis = L.marker([latbox, longbox], {
-                icon: greenIcon
-            }).addTo(mymap);
-            ergebnis.bindPopup("Die Entfernung zur Sensebox beträgt: " +
-            (position.distanceTo([latbox, longbox]) / 1000).toFixed(2) + "Km .Du hast" + punkte + " Punkt(e) in dieser Runde erzielt, deine Gesamtpunktzahl ist " + punkteGesamt).openPopup();
-            var pointA = [latbox, longbox];
-            var pointList = [pointA, pointB];
-            console.log(pointA, pointB);
-
-
-            firstpolyline = new L.Polyline(pointList, {
-                color: 'red',
-                weight: 5,
-                opacity: 0.6,
-                smoothFactor: 1
-            });
-            firstpolyline.addTo(mymap);
-            mymap.fitBounds(firstpolyline.getBounds());
-        }
-
-    })
-    
-    $("#NeueRundebtn").click(function(){
+        ZähleRunde()
 
         mymap.setView([51.4, 9], 4);
         mymap.removeLayer(marker);
@@ -219,7 +181,57 @@ app.controller('myCtrl', function($scope, $http) {
             console.log(response);
 
         });
-    }    
+    } 
+    
+
+    $("#Antwortbtn").click(function() {
+        if (ergebnis == null) {
+            ergebnis = L.marker([latbox, longbox], {
+                icon: greenIcon
+            }).addTo(mymap)
+        
+
+            score();
+            ergebnis.bindPopup("Die Entfernung zur Sensebox beträgt: " +
+            (position.distanceTo([latbox, longbox]) / 1000).toFixed(2) + "Km .Du hast " + punkte + " Punkt(e) in dieser Runde erzielt, deine Gesamtpunktzahl ist " + punkteGesamt).openPopup();
+            var pointA = [latbox, longbox];
+            var pointList = [pointA, pointB];
+            console.log(pointA, pointB);
+
+
+            firstpolyline = new L.Polyline(pointList, {
+                color: 'red',
+                weight: 5,
+                opacity: 0.6,
+                smoothFactor: 1
+            });
+            firstpolyline.addTo(mymap);
+            mymap.fitBounds(firstpolyline.getBounds());
+        } else {
+            mymap.removeLayer(ergebnis);
+            mymap.removeLayer(firstpolyline);
+            ergebnis = L.marker([latbox, longbox], {
+                icon: greenIcon
+            }).addTo(mymap);
+            ergebnis.bindPopup("Die Entfernung zur Sensebox beträgt: " +
+            (position.distanceTo([latbox, longbox]) / 1000).toFixed(2) + "Km .Du hast" + punkte + " Punkt(e) in dieser Runde erzielt, deine Gesamtpunktzahl ist " + punkteGesamt).openPopup();
+            var pointA = [latbox, longbox];
+            var pointList = [pointA, pointB];
+            console.log(pointA, pointB);
+
+
+            firstpolyline = new L.Polyline(pointList, {
+                color: 'red',
+                weight: 5,
+                opacity: 0.6,
+                smoothFactor: 1
+            });
+            firstpolyline.addTo(mymap);
+            mymap.fitBounds(firstpolyline.getBounds());
+        }
+
+    })
+    
 
     //TO-DO
     L.easyButton('glyphicon-ok', function() {
@@ -269,13 +281,23 @@ app.controller('myCtrl', function($scope, $http) {
 
     }).addTo(mymap);
 
+    $("#ergebnis").click(function () {
+
+    score();
+    ergebnis.bindPopup("Die Entfernung zur Sensebox beträgt: " +
+    (position.distanceTo([latbox, longbox]) / 1000).toFixed(2) + "Km .Du hast " + punkte + " Punkt(e) in dieser Runde erzielt, deine Gesamtpunktzahl ist " + punkteGesamt).openPopup();
+    var pointA = [latbox, longbox];
+    var pointList = [pointA, pointB];
+    console.log(pointA, pointB);
 
 
 
-    
+    })    
 
     //TO-DO neue Daten geladen Nachricht  + addieren der Punkte + speichern der Punkte
     L.easyButton('fa-repeat', function() {
+
+        ZähleRunde()
 
         mymap.setView([51.4, 9], 4);
         mymap.removeLayer(marker);

@@ -17,6 +17,8 @@ var position;
 var pointB = [];
 var Runde = 0;
 var Punktezählen = 0;
+var Rundebeenden = 10;
+
 
 var greenIcon = new L.Icon({
     iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',

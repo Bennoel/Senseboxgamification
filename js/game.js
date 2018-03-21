@@ -66,21 +66,63 @@ app.controller('myCtrl', function($scope, $http) {
         $scope.distance = (position.distanceTo([latbox, longbox]) / 1000).toFixed(2)
         console.log("l33337 Test  " + $scope.distance);
         // punkte einteilung
-        if (((position.distanceTo([latbox, longbox]) / 1000).toFixed(2)) < 50) {
-            punke = Number(20);
+        var Distance = (position.distanceTo([latbox,longbox])  / 1000).toFixed(2)
+
+        if ((Distance) < 25) {
+            punkte = Number (30);
+            punkteGesamt = + punkteGesamt + +30;
+        }
+        if ((Distance) < 50 && (Distance) > 25) {
+            punkte = Number (28);
+            punkteGesamt = + punkteGesamt + +28;
+        }
+        if ((Distance) < 75 && (Distance) > 50) {
+            punkte = Number (25);
+            punkteGesamt = + punkteGesamt + +25;
+        }
+        if ((Distance) < 100 && (Distance) > 75) {
+            punkte = Number (23);
+            punkteGesamt = + punkteGesamt + +23;
+        }
+        if ((Distance) < 125 && (Distance) > 100) {
+            punkte = Number (20);
             punkteGesamt = + punkteGesamt + +20;
         }
-        if (((position.distanceTo([latbox, longbox]) / 1000).toFixed(2)) < 150 && ((position.distanceTo([latbox, longbox]) / 1000).toFixed(2)) > 50) {
+        if ((Distance) < 150 && (Distance) > 125) {
+            punkte = Number (18);
+            punkteGesamt = + punkteGesamt + +18;
+        }
+        if ((Distance) < 175 && (Distance) > 150) {
+            punkte = Number (15);
+            punkteGesamt = + punkteGesamt + +15;
+        }
+        if ((Distance) < 200 && (Distance) > 175) {
+            punkte = Number (13);
+            punkteGesamt = + punkteGesamt + +13;
+        }
+        if ((Distance) < 225 && (Distance) > 200) {
             punkte = Number (10);
             punkteGesamt = + punkteGesamt + +10;
         }
-        if (((position.distanceTo([latbox, longbox]) / 1000).toFixed(2)) < 250 && ((position.distanceTo([latbox, longbox]) / 1000).toFixed(2)) > 150) {
+        if ((Distance) < 250 && (Distance) > 225) {
+            punkte = Number (8);
+            punkteGesamt = + punkteGesamt + +8;
+        }
+        if ((Distance) < 275 && (Distance) > 250) {
             punkte = Number (5);
             punkteGesamt = + punkteGesamt + +5;
         }
-        if (((position.distanceTo([latbox, longbox]) / 1000).toFixed(2)) > 250 && ((position.distanceTo([latbox, longbox]) / 1000).toFixed(2)) < 400) {
+        if ((Distance) < 300 && (Distance) > 275) {
+            punkte = Number (3);
+            punkteGesamt = + punkteGesamt + +3;
+        }
+        if ((Distance) < 400 && (Distance) > 300) {
             punkte = Number (1);
             punkteGesamt = + punkteGesamt + +1;
+        }
+        if ((Distance) > 400) {
+            punkte = Number (0);
+            punkteGesamt = + punkteGesamt + +0;
         }
     };
 
@@ -89,6 +131,12 @@ app.controller('myCtrl', function($scope, $http) {
      
      Runde= Runde +1 
      
+     if (Runde == 10) {
+         alert( "Herzlichen Glückwunsch du hast in 10 Runden" + punkteGesamt + "Punkte gesammelt")
+         Runde = 0;
+         punkteGesamt = 0;
+        }
+    
      $("#RundenNummer").text(Runde)
     }
       
@@ -127,10 +175,9 @@ app.controller('myCtrl', function($scope, $http) {
 
   $("#DrückezumSpielendernächstenRundebtn").click( function () {
 
-        
-        ZähleRunde()
+        ZähleRunde ()
 
-        mymap.setView([51.4, 9], 4);
+        mymap.setView([51.4, 9], 5);
         mymap.removeLayer(marker);
         mymap.removeLayer(ergebnis);
         mymap.removeLayer(firstpolyline);
@@ -257,8 +304,8 @@ app.controller('myCtrl', function($scope, $http) {
 
             firstpolyline = new L.Polyline(pointList, {
                 color: 'red',
-                weight: 5,
-                opacity: 0.6,
+                weight: 7,
+                opacity: 5,
                 smoothFactor: 1
             });
             firstpolyline.addTo(mymap);
@@ -294,7 +341,7 @@ app.controller('myCtrl', function($scope, $http) {
         
         ZähleRunde()
 
-        mymap.setView([51.4, 9], 4);
+        mymap.setView([51.4, 9], 5);
         mymap.removeLayer(marker);
         mymap.removeLayer(ergebnis);
         mymap.removeLayer(firstpolyline);

@@ -16,7 +16,7 @@ var boxId = [];
 var position;
 var pointB = [];
 var Runde = 0;
-
+var Punktezählen = 0;
 
 var greenIcon = new L.Icon({
     iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
@@ -67,26 +67,26 @@ app.controller('myCtrl', function($scope, $http) {
         console.log("l33337 Test  " + $scope.distance);
         // punkte einteilung
         if (((position.distanceTo([latbox, longbox]) / 1000).toFixed(2)) < 50) {
-            punkte = punkte + +20;
+            punke = Number(20);
             punkteGesamt = + punkteGesamt + +20;
         }
         if (((position.distanceTo([latbox, longbox]) / 1000).toFixed(2)) < 150 && ((position.distanceTo([latbox, longbox]) / 1000).toFixed(2)) > 50) {
-            punkte += punkte + +10;
+            punkte = Number (10);
             punkteGesamt = + punkteGesamt + +10;
         }
         if (((position.distanceTo([latbox, longbox]) / 1000).toFixed(2)) < 250 && ((position.distanceTo([latbox, longbox]) / 1000).toFixed(2)) > 150) {
-            punkte += punkte + +5;
+            punkte = Number (5);
             punkteGesamt = + punkteGesamt + +5;
         }
         if (((position.distanceTo([latbox, longbox]) / 1000).toFixed(2)) > 250 && ((position.distanceTo([latbox, longbox]) / 1000).toFixed(2)) < 400) {
-            punkte = punkte+ +1;
+            punkte = Number (1);
             punkteGesamt = + punkteGesamt + +1;
         }
     };
 
     
     function ZähleRunde() {
-
+     
      Runde= Runde +1 
      
      $("#RundenNummer").text(Runde)
@@ -117,10 +117,17 @@ app.controller('myCtrl', function($scope, $http) {
     $scope.distance = boxDistance;
     console.log("heiiiide " + boxDistance);
     //boxDistance ist undefined
-     
-    $("#DrückezumSpielendernächstenRundebtn").click( function () {
 
+     function Punkteanzeige () {
+       Punktezählen= punkteGesamt  
 
+         $("#ergebnis").text(Punktezählen)
+         //Function bei den Knöpfen ergenzen(zuhause)
+     }
+
+  $("#DrückezumSpielendernächstenRundebtn").click( function () {
+
+        
         ZähleRunde()
 
         mymap.setView([51.4, 9], 4);
@@ -129,7 +136,7 @@ app.controller('myCtrl', function($scope, $http) {
         mymap.removeLayer(firstpolyline);
         ergebnis= null;
         randomize(boxId, $http)
-
+         
     })
     mymap.on('click', onMapClick);
 
@@ -281,22 +288,10 @@ app.controller('myCtrl', function($scope, $http) {
 
     }).addTo(mymap);
 
-    $("#ergebnis").click(function () {
-
-    score();
-    ergebnis.bindPopup("Die Entfernung zur Sensebox beträgt: " +
-    (position.distanceTo([latbox, longbox]) / 1000).toFixed(2) + "Km .Du hast " + punkte + " Punkt(e) in dieser Runde erzielt, deine Gesamtpunktzahl ist " + punkteGesamt).openPopup();
-    var pointA = [latbox, longbox];
-    var pointList = [pointA, pointB];
-    console.log(pointA, pointB);
-
-
-
-    })    
-
     //TO-DO neue Daten geladen Nachricht  + addieren der Punkte + speichern der Punkte
     L.easyButton('fa-repeat', function() {
-
+        
+        
         ZähleRunde()
 
         mymap.setView([51.4, 9], 4);

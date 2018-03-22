@@ -134,7 +134,7 @@ app.controller('myCtrl', function($scope, $http) {
      Runde= Runde +1 
      
      if (Runde == 10) {
-         alert( "Herzlichen Glückwunsch du hast in 10 Runden" + punkteGesamt + "Punkte gesammelt")
+         alert( "Herzlichen Glückwunsch du hast in 10 Runden " + punkteGesamt + " Punkte gesammelt")
          Runde = 0;
          punkteGesamt = 0;
         }
@@ -172,12 +172,13 @@ app.controller('myCtrl', function($scope, $http) {
        Punktezählen= punkteGesamt  
 
          $("#ergebnis").text(Punktezählen)
-         //Function bei den Knöpfen ergenzen(zuhause)
+        
      }
 
   $("#DrückezumSpielendernächstenRundebtn").click( function () {
 
         ZähleRunde ()
+		Punkteanzeige ()
 
         mymap.setView([51.4, 9], 5);
         mymap.removeLayer(marker);
@@ -342,6 +343,7 @@ app.controller('myCtrl', function($scope, $http) {
         
         
         ZähleRunde()
+		Punkteanzeige ()
 
         mymap.setView([51.4, 9], 5);
         mymap.removeLayer(marker);

@@ -305,8 +305,8 @@ app.controller('myCtrl', function($scope, $http) {
 
             firstpolyline = new L.Polyline(pointList, {
                 color: 'red',
-                weight: 7,
-                opacity: 5,
+                weight: 5,
+                opacity: 0.6,
                 smoothFactor: 1
             });
             firstpolyline.addTo(mymap);

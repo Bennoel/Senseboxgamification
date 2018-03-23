@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.2/dist/leaflet.css" />
     <style>
         #mapid {
-            height: 600px;
+            height: 700px;
         }
     </style>
     <title>Gamification for Sensebox</title>
@@ -87,7 +87,6 @@
                 </div>
             </div>
             <div class="row">
-                
                 <div class="col-md-auto">
                     <div class="panel panel-default">
                         <div class="panel-body">
@@ -113,13 +112,11 @@
                     <div class="panel panel-default">
                         <div class="panel-body">
                             Gesamtpunkte:
-                            <!-- Punkte -->
                             <button class="btn btn-info btn-m" id="ergebnis">
                             </button>
                         </div>
                     </div>
                 </div>
-
                 <div class="col-md-auto">
                     <div class="panel panel-default">
                         <div class="panel-body">
@@ -140,24 +137,22 @@
             </div>
         
         <!-- Example row of columns -->
-        <div class="row" ng-app="myApp" ng-controller="myCtrl">
-            <div class="col-md-4">
-                <!-- Panels with data -->
-                <div class="panel panel-default" ng-repeat="b in box">
-                    <div class="panel-heading">{{b.title}}</div>
-                    <div class="panel-body">{{b.value}} {{b.unit}}
-                        <p>gemessen am: {{b.lastMeasurement}}</p>
+            <div class="row" ng-app="myApp" ng-controller="myCtrl">
+                <div class="col-md-4">
+                    <!-- Panels with data -->
+                    <div class="panel panel-default" ng-repeat="b in box">
+                        <div class="panel-heading">{{b.title}}</div>
+                        <div class="panel-body">{{b.value}} {{b.unit}}
+                            <p>gemessen am: {{b.lastMeasurement}}</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- /container -->
-
-    </div>
-    <hr>
-    <footer>
-        <p>&copy; 2016 Höltgen-Qiu Inc.</p>
-    </footer>
+            <hr>
+            <footer>
+                <p>&copy; 2016 Höltgen-Qiu Inc.</p>
+            </footer>
     </div>
     <!-- /container -->
     <!-- Bootstrap core JavaScript

@@ -17,8 +17,6 @@ var position;
 var pointB = [];
 var Runde = 0;
 var Punktezählen = 0;
-var Rundebeenden = 10;
-
 
 var greenIcon = new L.Icon({
     iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
@@ -30,7 +28,7 @@ var greenIcon = new L.Icon({
 });
 
 //aufrufen der karte
-var mymap = L.map('mapid').setView([51.4, 9], 4);
+var mymap = L.map('mapid').setView([51.4, 9], 5);
 L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
     maxZoom: 18,
@@ -271,7 +269,7 @@ app.controller('myCtrl', function($scope, $http) {
                 icon: greenIcon
             }).addTo(mymap);
             ergebnis.bindPopup("Die Entfernung zur Sensebox beträgt: " +
-            (position.distanceTo([latbox, longbox]) / 1000).toFixed(2) + "Km .Du hast" + punkte + " Punkt(e) in dieser Runde erzielt, deine Gesamtpunktzahl ist " + punkteGesamt).openPopup();
+            (position.distanceTo([latbox, longbox]) / 1000).toFixed(2) + "Km .Du hast " + punkte + " Punkt(e) in dieser Runde erzielt, deine Gesamtpunktzahl ist " + punkteGesamt).openPopup();
             var pointA = [latbox, longbox];
             var pointList = [pointA, pointB];
             console.log(pointA, pointB);
@@ -289,7 +287,7 @@ app.controller('myCtrl', function($scope, $http) {
 
     })
     
-
+   
     //TO-DO
     L.easyButton('glyphicon-ok', function() {
         if (ergebnis == null) {
@@ -299,7 +297,7 @@ app.controller('myCtrl', function($scope, $http) {
 
             score();
             ergebnis.bindPopup("Die Entfernung zur Sensebox beträgt: " +
-            (position.distanceTo([latbox, longbox]) / 1000).toFixed(2) + "Km .Du hast " + punkte + " Punkt(e) in dieser Runde erzielt, deine Gesamtpunktzahl ist " + punkteGesamt).openPopup();
+            (position.distanceTo([latbox, longbox]) / 1000).toFixed(2) + "Km .Du hast  " + punkte + " Punkt(e) in dieser Runde erzielt, deine Gesamtpunktzahl ist " + punkteGesamt).openPopup();
             var pointA = [latbox, longbox];
             var pointList = [pointA, pointB];
             console.log(pointA, pointB);
